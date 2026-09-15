@@ -15,7 +15,8 @@ import {
   BarChart2,
   Calendar,
   Download,
-  Smartphone
+  Smartphone,
+  ShieldAlert
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -25,12 +26,21 @@ import { AndroidApkSection } from './AndroidApkSection';
 import { ApkDownloadModal } from './ApkDownloadModal';
 import { FreeOfferings3DShowcase } from './FreeOfferings3DShowcase';
 import { EthiopianFlag } from './EthiopianFlag';
+import { AuthDomainModal } from './AuthDomainModal';
 import { downloadApkDirect, APK_DETAILS } from '../utils/apkDownloader';
 
 export const LandingPage: React.FC = () => {
-  const { signInWithGoogle, loading, authError } = useAuth();
+  const { 
+    signInWithGoogle, 
+    signInAsGuest, 
+    loading, 
+    authError, 
+    isDomainUnauthorized,
+    clearAuthError 
+  } = useAuth();
   const { isDark } = useTheme();
   const [isApkModalOpen, setIsApkModalOpen] = useState(false);
+  const [isDomainModalOpen, setIsDomainModalOpen] = useState(false);
 
   const handleDownloadApk = () => {
     setIsApkModalOpen(true);
@@ -185,25 +195,66 @@ export const LandingPage: React.FC = () => {
               )}
               <span>Sign In with Google</span>
             </button>
+
+            {/* Quick Guest Access Button in Header */}
+            <button
+              id="header-guest-access-button"
+              onClick={signInAsGuest}
+              className={`hidden sm:flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 border cursor-pointer ${
+                isDark
+                  ? 'bg-slate-900/60 hover:bg-slate-800 border-slate-700 text-slate-300 hover:text-white'
+                  : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700 shadow-sm'
+              }`}
+            >
+              <span>Guest Demo</span>
+            </button>
           </div>
         </div>
       </header>
 
-      {/* Error Banner */}
+      {/* Error / Authorization Notice Banner */}
       {authError && (
-        <div className="max-w-4xl mx-auto mt-4 px-4">
-          <div className="p-4 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-300 flex items-center justify-between text-xs font-medium">
-            <div className="flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
-              <span>{authError}</span>
+        <div className="max-w-4xl mx-auto mt-4 px-4 animate-in fade-in duration-200">
+          {isDomainUnauthorized ? (
+            <div className="p-4 sm:p-5 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs shadow-lg">
+              <div className="flex items-start sm:items-center gap-3">
+                <ShieldAlert className="w-5 h-5 text-amber-400 shrink-0 mt-0.5 sm:mt-0" />
+                <div>
+                  <span className="font-bold text-white block text-sm">Firebase Domain Authorization Required</span>
+                  <span className="text-amber-300/90 text-xs">
+                    Your current domain ({typeof window !== 'undefined' ? window.location.hostname : 'github.io'}) needs to be added to Firebase Authorized Domains.
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 pt-2 sm:pt-0">
+                <button
+                  onClick={() => setIsDomainModalOpen(true)}
+                  className="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 cursor-pointer shadow transition-all"
+                >
+                  30s Fix Guide
+                </button>
+                <button
+                  onClick={signInAsGuest}
+                  className="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-slate-800 text-slate-200 font-bold text-xs hover:bg-slate-700 cursor-pointer border border-slate-700 transition-all"
+                >
+                  Enter as Guest
+                </button>
+              </div>
             </div>
-            <button
-              onClick={signInWithGoogle}
-              className="underline font-bold cursor-pointer hover:text-rose-100"
-            >
-              Retry
-            </button>
-          </div>
+          ) : (
+            <div className="p-4 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-300 flex items-center justify-between text-xs font-medium">
+              <div className="flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                <span>{authError}</span>
+              </div>
+              <button
+                onClick={signInWithGoogle}
+                className="underline font-bold cursor-pointer hover:text-rose-100 ml-4"
+              >
+                Retry
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -355,6 +406,20 @@ export const LandingPage: React.FC = () => {
             <Sparkles className="w-4 h-4" />
             <span>Explore What's Free (3D)</span>
           </a>
+        </div>
+
+        {/* Quick Instant Demo Access */}
+        <div className="mt-5 flex items-center justify-center gap-2 text-xs">
+          <span className={isDark ? 'text-slate-400' : 'text-slate-500'}>
+            Want to test immediately without signing in?
+          </span>
+          <button
+            onClick={signInAsGuest}
+            className="font-mono font-bold text-emerald-400 hover:text-emerald-300 underline cursor-pointer inline-flex items-center gap-1"
+          >
+            <span>Instant Demo Terminal Access</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
         </div>
 
         {/* Notice */}
@@ -542,6 +607,13 @@ export const LandingPage: React.FC = () => {
         isOpen={isApkModalOpen}
         onClose={() => setIsApkModalOpen(false)}
         autoStart={true}
+      />
+
+      {/* Firebase Domain Authorization Diagnostic Modal */}
+      <AuthDomainModal
+        isOpen={isDomainModalOpen}
+        onClose={() => setIsDomainModalOpen(false)}
+        rawError={authError}
       />
     </div>
   );

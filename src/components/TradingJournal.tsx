@@ -52,7 +52,7 @@ export const TradingJournal: React.FC = () => {
 
   // Real-time Firestore sync when authenticated
   useEffect(() => {
-    if (!user) return;
+    if (!user || user.uid === 'guest_terminal_user') return;
 
     try {
       const tradesRef = collection(db, 'users', user.uid, 'trades');
@@ -100,8 +100,8 @@ export const TradingJournal: React.FC = () => {
     // Update local state immediately for zero-lag UI
     setTrades((prev) => [newTrade, ...prev]);
 
-    // Persist to Firestore if user is authenticated
-    if (user) {
+    // Persist to Firestore if user is authenticated with real account
+    if (user && user.uid !== 'guest_terminal_user') {
       setIsSyncing(true);
       try {
         const tradeRef = doc(db, 'users', user.uid, 'trades', newTradeId);
@@ -146,7 +146,7 @@ export const TradingJournal: React.FC = () => {
   const handleDeleteTrade = async (id: string) => {
     setTrades((prev) => prev.filter((t) => t.id !== id));
 
-    if (user) {
+    if (user && user.uid !== 'guest_terminal_user') {
       try {
         const tradeRef = doc(db, 'users', user.uid, 'trades', id);
         await deleteDoc(tradeRef);

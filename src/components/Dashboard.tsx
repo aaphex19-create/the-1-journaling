@@ -22,18 +22,20 @@ import { MindsetQuotesSection } from './MindsetQuotesSection';
 import { SessionClockTeller } from './SessionClockTeller';
 import { AphexCapitalFooter } from './AphexCapitalFooter';
 import { ProfileModal } from './ProfileModal';
-import { GraduationCap, Clock } from 'lucide-react';
+import { AuthDomainModal } from './AuthDomainModal';
+import { GraduationCap, Clock, LogIn, ShieldAlert } from 'lucide-react';
 
 type DashboardTab = 'journal' | 'sessions' | 'courses' | 'books' | 'quotes';
 
 export const Dashboard: React.FC = () => {
-  const { user, userProfile, logout } = useAuth();
+  const { user, userProfile, logout, isGuest, signInWithGoogle, isDomainUnauthorized, authError } = useAuth();
   const { isDark } = useTheme();
 
   const [activeTab, setActiveTab] = useState<DashboardTab>('journal');
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [isDomainModalOpen, setIsDomainModalOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState<string>('');
 
   // Live Terminal Clock
@@ -145,6 +147,25 @@ export const Dashboard: React.FC = () => {
                 </span>
               </div>
 
+              {/* Guest Mode Indicator & Connect Google Button */}
+              {isGuest && (
+                <div className="flex items-center gap-2">
+                  <span className="hidden xl:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                    Guest Terminal
+                  </span>
+                  <button
+                    onClick={() => {
+                      signInWithGoogle().catch(() => setIsDomainModalOpen(true));
+                    }}
+                    className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-400/40 text-xs font-bold transition-all cursor-pointer shadow-sm"
+                  >
+                    <LogIn className="w-3.5 h-3.5" />
+                    <span>Connect Google</span>
+                  </button>
+                </div>
+              )}
+
               {/* Color Changer Toggle in top-right */}
               <ThemeToggle />
 
@@ -229,6 +250,35 @@ export const Dashboard: React.FC = () => {
                         <BookOpen className="w-4 h-4 text-amber-400" />
                         <span>Free Books Library</span>
                       </button>
+
+                      {/* Guest Mode Actions in Dropdown */}
+                      {isGuest && (
+                        <>
+                          <div className="my-1 border-t border-white/10" />
+                          <button
+                            onClick={() => {
+                              setIsUserMenuOpen(false);
+                              signInWithGoogle().catch(() => setIsDomainModalOpen(true));
+                            }}
+                            type="button"
+                            className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-emerald-400 hover:bg-emerald-500/10 rounded-xl cursor-pointer"
+                          >
+                            <LogIn className="w-4 h-4" />
+                            <span>Connect Google Account</span>
+                          </button>
+                          <button
+                            onClick={() => {
+                              setIsUserMenuOpen(false);
+                              setIsDomainModalOpen(true);
+                            }}
+                            type="button"
+                            className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-amber-400 hover:bg-amber-500/10 rounded-xl cursor-pointer"
+                          >
+                            <ShieldAlert className="w-4 h-4" />
+                            <span>Firebase Domain Guide</span>
+                          </button>
+                        </>
+                      )}
 
                       <div className="my-1 border-t border-white/10" />
 
@@ -333,6 +383,13 @@ export const Dashboard: React.FC = () => {
       <ProfileModal
         isOpen={isProfileOpen}
         onClose={() => setIsProfileOpen(false)}
+      />
+
+      {/* Firebase Domain Authorization Diagnostic Modal */}
+      <AuthDomainModal
+        isOpen={isDomainModalOpen}
+        onClose={() => setIsDomainModalOpen(false)}
+        rawError={authError}
       />
     </div>
   );
