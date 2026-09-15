@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    transition: background-color 300ms ease, color 300ms ease;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+/* Technological blueprint grid background for Dark Mode (referencing Image 2) */
+.dark-grid-canvas {
+  background-color: #070a12;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    radial-gradient(circle at 50% 0%, rgba(212, 255, 0, 0.08) 0%, transparent 65%);
+  background-size: 40px 40px, 40px 40px, 100% 100%;
+}
+
+/* Clean warm ivory canvas for Light Mode (referencing Image 1) */
+.light-ivory-canvas {
+  background-color: #f7f7f5;
+  background-image: radial-gradient(circle at 80% 10%, rgba(224, 83, 51, 0.05) 0%, transparent 50%);
+}
+
+/* Liquid Glass Utilities */
+.liquid-glass-dark {
+  background: rgba(13, 19, 33, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.liquid-glass-dark:hover {
+  border-color: rgba(212, 255, 0, 0.25);
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.8), 0 0 25px -5px rgba(212, 255, 0, 0.1);
+}
+
+.liquid-glass-light {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.liquid-glass-card-dark {
+  background: rgba(14, 20, 34, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.liquid-glass-card-light {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Neon Glow Accents matching Image 2 */
+.glow-lime {
+  box-shadow: 0 0 25px rgba(212, 255, 0, 0.35);
+}
+
+.glow-lime-badge {
+  box-shadow: 0 0 15px rgba(212, 255, 0, 0.25);
+}
+
+.text-glow-lime {
+  text-shadow: 0 0 20px rgba(212, 255, 0, 0.5);
+}
+
+.glow-terracotta {
+  box-shadow: 0 0 25px rgba(224, 83, 51, 0.3);
+}
+
+/* Modal Liquid Glass Popup with Radiant Glow */
+.coming-soon-glow {
+  box-shadow: 0 0 50px rgba(212, 255, 0, 0.2), inset 0 0 20px rgba(212, 255, 0, 0.08);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.25);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 255, 0, 0.5);
+}

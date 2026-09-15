@@ -1,0 +1,8 @@
+{
+  "name": "Remix THE 1%",
+  "description": "Elite trading execution journal, psychological leakage diagnostics, free trading books, and glowing liquid glass interface.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

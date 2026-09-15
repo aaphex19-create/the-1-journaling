@@ -1,0 +1,85 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net - Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidUserProfile(data) {
+      return (
+        (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 100)) &&
+        (!('email' in data) || (data.email is string && data.email.size() <= 150)) &&
+        (!('photoURL' in data) || (data.photoURL is string && data.photoURL.size() <= 500)) &&
+        (!('theme' in data) || (data.theme in ['dark', 'light'])) &&
+        (!('tier' in data) || (data.tier is string && data.tier.size() <= 50)) &&
+        (!('bio' in data) || (data.bio is string && data.bio.size() <= 300)) &&
+        (!('watchlist' in data) || (data.watchlist is list && data.watchlist.size() <= 50))
+      );
+    }
+
+    function isValidInsight(data) {
+      return (
+        data.userId == request.auth.uid &&
+        data.symbol is string && data.symbol.size() <= 20 &&
+        data.title is string && data.title.size() <= 100 &&
+        (!('sentiment' in data) || (data.sentiment in ['bullish', 'bearish', 'neutral'])) &&
+        (!('notes' in data) || (data.notes is string && data.notes.size() <= 1000))
+      );
+    }
+
+    function isValidTradeEntry(data) {
+      return (
+        data.userId == request.auth.uid &&
+        data.symbol is string && data.symbol.size() <= 20 &&
+        data.direction in ['LONG', 'SHORT'] &&
+        data.pnl is number &&
+        data.rMultiple is number &&
+        (!('date' in data) || (data.date is string && data.date.size() <= 50)) &&
+        (!('timeframe' in data) || (data.timeframe is string && data.timeframe.size() <= 30)) &&
+        (!('session' in data) || (data.session is string && data.session.size() <= 50)) &&
+        (!('setup' in data) || (data.setup is string && data.setup.size() <= 60)) &&
+        (!('notes' in data) || (data.notes is string && data.notes.size() <= 2500)) &&
+        (!('lessons' in data) || (data.lessons is string && data.lessons.size() <= 2500)) &&
+        (!('attachments' in data) || (data.attachments is list && data.attachments.size() <= 10))
+      );
+    }
+
+    // User Profiles
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false; // Users cannot list other users
+      allow create: if isOwner(userId) && isValidUserProfile(request.resource.data);
+      allow update: if isOwner(userId) && isValidUserProfile(request.resource.data);
+      allow delete: if isOwner(userId);
+
+      // User Private Insights
+      match /insights/{insightId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidInsight(request.resource.data);
+        allow update: if isOwner(userId) && isValidInsight(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+
+      // User Private Trades
+      match /trades/{tradeId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidTradeEntry(request.resource.data);
+        allow update: if isOwner(userId) && isValidTradeEntry(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+    }
+  }
+}

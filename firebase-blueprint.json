@@ -1,0 +1,179 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "User profile data and settings for THE 1% platform",
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 150
+        },
+        "photoURL": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "theme": {
+          "type": "string",
+          "enum": ["dark", "light"]
+        },
+        "tier": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "bio": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "watchlist": {
+          "type": "array"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["email", "theme"]
+    },
+    "UserInsight": {
+      "title": "User Market Note",
+      "description": "Personalized research log and trade insights",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "symbol": {
+          "type": "string",
+          "maxLength": 20
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "sentiment": {
+          "type": "string",
+          "enum": ["bullish", "bearish", "neutral"]
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["userId", "symbol", "title"]
+    },
+    "TradeEntry": {
+      "title": "Trade Entry",
+      "description": "User trade log entry with execution parameters, psychology, and attachments",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "symbol": {
+          "type": "string",
+          "maxLength": 20
+        },
+        "date": {
+          "type": "string",
+          "maxLength": 30
+        },
+        "direction": {
+          "type": "string",
+          "enum": ["LONG", "SHORT"]
+        },
+        "timeframe": {
+          "type": "string",
+          "maxLength": 20
+        },
+        "session": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "setup": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "entryPrice": {
+          "type": "number"
+        },
+        "exitPrice": {
+          "type": "number"
+        },
+        "stopLoss": {
+          "type": "number"
+        },
+        "positionSize": {
+          "type": "number"
+        },
+        "pnl": {
+          "type": "number"
+        },
+        "rMultiple": {
+          "type": "number"
+        },
+        "outcome": {
+          "type": "string",
+          "enum": ["WIN", "LOSS", "BREAKEVEN"]
+        },
+        "emotionalState": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "executionGrade": {
+          "type": "string",
+          "maxLength": 5
+        },
+        "mistakeTag": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "lessons": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "attachments": {
+          "type": "array"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["userId", "symbol", "direction", "pnl", "rMultiple"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Private user profile and personal configurations"
+    },
+    "/users/{userId}/insights/{insightId}": {
+      "schema": "UserInsight",
+      "description": "User market notes, trade logs, and private watch annotations"
+    },
+    "/users/{userId}/trades/{tradeId}": {
+      "schema": "TradeEntry",
+      "description": "User private trade logs with analytics and attached screenshots/videos"
+    }
+  }
+}
