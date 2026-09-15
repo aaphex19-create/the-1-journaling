@@ -24,6 +24,7 @@ import { AphexCapitalFooter } from './AphexCapitalFooter';
 import { AndroidApkSection } from './AndroidApkSection';
 import { ApkDownloadModal } from './ApkDownloadModal';
 import { FreeOfferings3DShowcase } from './FreeOfferings3DShowcase';
+import { EthiopianFlag } from './EthiopianFlag';
 import { downloadApkDirect, APK_DETAILS } from '../utils/apkDownloader';
 
 export const LandingPage: React.FC = () => {
@@ -88,6 +89,11 @@ export const LandingPage: React.FC = () => {
               >
                 Made by APHEX CAPITAL
               </span>
+            </div>
+
+            {/* Glowing Ethiopian Flag in Header */}
+            <div className="hidden sm:flex items-center pl-3 border-l border-white/10">
+              <EthiopianFlag size="sm" />
             </div>
           </div>
 
@@ -203,16 +209,32 @@ export const LandingPage: React.FC = () => {
 
       {/* Hero Section */}
       <section className="relative pt-16 pb-20 md:pt-24 md:pb-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
-        {/* Prestige Tag referencing the reference images */}
-        <div
-          className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider mb-8 border transition-all duration-300 ${
-            isDark
-              ? 'bg-slate-900/80 border-[#d4ff00]/40 text-[#d4ff00] glow-lime-badge'
-              : 'bg-white border-[#e05333]/30 text-[#e05333] shadow-sm'
-          }`}
-        >
-          <span className={`w-2 h-2 rounded-full animate-ping ${isDark ? 'bg-[#d4ff00]' : 'bg-[#e05333]'}`} />
-          <span>The Elite Trading Psychology & Journal Terminal</span>
+        {/* Prestige Tag & Glowing Ethiopian Flag Badge */}
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
+          <div
+            className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider border transition-all duration-300 ${
+              isDark
+                ? 'bg-slate-900/80 border-[#d4ff00]/40 text-[#d4ff00] glow-lime-badge'
+                : 'bg-white border-[#e05333]/30 text-[#e05333] shadow-sm'
+            }`}
+          >
+            <span className={`w-2 h-2 rounded-full animate-ping ${isDark ? 'bg-[#d4ff00]' : 'bg-[#e05333]'}`} />
+            <span>The Elite Trading Psychology & Journal Terminal</span>
+          </div>
+
+          {/* Glowing Ethiopian Flag Badge - Balanced Size & Radiant Tricolor Glow */}
+          <div
+            className={`inline-flex items-center gap-3 px-3.5 py-1.5 rounded-full border backdrop-blur-md shadow-lg transition-all duration-300 hover:scale-105 ${
+              isDark
+                ? 'bg-slate-900/90 border-emerald-500/30 text-slate-200 shadow-[0_0_25px_rgba(254,209,0,0.25)]'
+                : 'bg-white/95 border-emerald-600/20 text-slate-800 shadow-md'
+            }`}
+          >
+            <EthiopianFlag size="md" />
+            <span className="text-[11px] font-mono font-black uppercase tracking-wider text-emerald-400">
+              ETHIOPIA
+            </span>
+          </div>
         </div>
 
         {/* Hero Title with High-Contrast Typography */}
